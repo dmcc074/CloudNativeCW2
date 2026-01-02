@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriSource Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* Sidebar Styling */
+        .sidebar { min-height: 100vh; background: #fff; border-right: 1px solid #dee2e6; }
+        .nav-link { color: #495057; font-weight: 500; padding: 12px 20px; }
+        .nav-link:hover, .nav-link.active { color: #0d6efd; background-color: #e9ecef; border-right: 3px solid #0d6efd; }
+        .nav-link i { width: 25px; }
+
+        /* Card Styling */
+        .stat-card { border: none; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); }
+        .icon-box { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.2rem; }
+        
+        /* Feed & Queue */
+        .report-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .hash-text { font-family: monospace; font-size: 0.75rem; color: #6c757d; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+        
+        /* Ledger Section */
+        .ledger-box { background: #fff; border-radius: 10px; padding: 20px; border: 1px solid #e9ecef; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        
+        <nav class="col-md-2 d-none d-md-block sidebar py-3">
+            <h4 class="px-3 mb-4 text-primary"><i class="fas fa-shield-alt"></i> VeriSource</h4>
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-chart-line"></i> Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="alert('Demo: Click Overview to reset')"><i class="fas fa-layer-group"></i> All Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-check-circle"></i> Verified</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-exclamation-triangle"></i> Under Review</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-flag"></i> Flagged</a></li>
+                    <hr>
+                    <li class="nav-item"><a class="nav-link text-danger" href="#"><i class="fas fa-users-cog"></i> User Management</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#"><i class="fas fa-link"></i> Blockchain Ledger</a></li>
+                </ul>
+            </div>
+            
+            <div class="px-3 mt-4">
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    <i class="fas fa-plus"></i> New Report
+                </button>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 py-4">
+            
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+                <div>
+                    <h2 class="h3">Dashboard Overview</h2>
+                    <p class="text-muted">Monitor news authenticity and platform integrity</p>
+                </div>
+                <div class="user-profile">
+                    <span class="fw-bold">Admin User</span> <img src="https://via.placeholder.com/40" class="rounded-circle ms-2">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card stat-card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Total Reports</h6>
+                                <h3 class="fw-bold mb-0" id="stat-total">0</h3>
+                            </div>
+                            <div class="icon-box bg-light text-primary"><i class="fas fa-newspaper"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Verified Authentic</h6>
+                                <h3 class="fw-bold mb-0 text-success" id="stat-verified">0</h3>
+                            </div>
+                            <div class="icon-box bg-light text-success"><i class="fas fa-check"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Under Review</h6>
+                                <h3 class="fw-bold mb-0 text-warning" id="stat-review">0</h3>
+                            </div>
+                            <div class="icon-box bg-light text-warning"><i class="fas fa-clock"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Flagged Content</h6>
+                                <h3 class="fw-bold mb-0 text-danger" id="stat-flagged">0</h3>
+                            </div>
+                            <div class="icon-box bg-light text-danger"><i class="fas fa-flag"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Reports</h5>
+                            <button class="btn btn-sm btn-link" onclick="loadDashboard()">Refresh</button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="recent-reports-feed" class="list-group list-group-flush">
+                                <div class="text-center p-4">Loading Reports...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Verification Queue</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="verification-queue" class="list-group list-group-flush">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="ledger-box">
+                        <h5 class="mb-3">Blockchain Ledger Status</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4 border-end">
+                                <h3 class="text-success fw-bold">100%</h3>
+                                <p class="text-muted">Chain Integrity</p>
+                            </div>
+                            <div class="col-md-4 border-end">
+                                <h3 class="fw-bold" id="stat-blocks">0</h3>
+                                <p class="text-muted">Blocks Created</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="fw-bold">15ms</h3>
+                                <p class="text-muted">Avg. Verification Time</p>
+                            </div>
+                        </div>
+                        <div class="bg-light p-3 mt-3 rounded d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-link me-2"></i> Latest Block Hash</span>
+                            <code class="text-dark" id="latest-hash">Fetching...</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Field Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <input type="text" id="title" class="form-control mb-2" placeholder="Title" required>
+                    <input type="text" id="lat" class="form-control mb-2" placeholder="Lat" required>
+                    <input type="text" id="long" class="form-control mb-2" placeholder="Long" required>
+                    <input type="file" id="fileInput" class="form-control mb-2" required>
+                    <button type="submit" class="btn btn-primary w-100">Upload to Chain</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
